@@ -17,18 +17,16 @@ def command_parse(prompt: str) -> None:
     command = prompt_list.pop(0)
     if command in ('add', 'change') and len(prompt_list) >= 2 \
             and prompt_list[-1].isdigit() and len(prompt_list[-1]) in (10, 11):
-        name = ' '.join(list(map(lambda i: i.capitalize(), prompt_list[:-1])))
-        num = prompt_list[-1]
+        num = prompt_list.pop(-1)
+        name = ' '.join(list(map(lambda i: i.capitalize(), prompt_list)))
         if command == 'add':
             return add_contact(contact_dict, name, num)
-        elif command == 'change':
-            return edit_contact(contact_dict, name, num)
+        return edit_contact(contact_dict, name, num)
     elif command in ('phone', 'del') and len(prompt_list) >= 1:
         name = ' '.join(list(map(lambda i: i.capitalize(), prompt_list)))
         if command == 'phone':
             return get_number(contact_dict, name)
-        elif command == 'del':
-            return delete_contact(contact_dict, name)
+        return delete_contact(contact_dict, name)
     elif command == 'hello' and len(prompt_list) == 0:
         hello()
     else:
@@ -70,8 +68,7 @@ def delete_contact(contacts: Dict, name: str) -> str:
 def view_contacts(contacts: Dict) -> List:
     if not contacts:
         return ['\nYour contact list is empty']
-    else:
-        return [f'{k:<12}>>>{v:>15}' for k, v in contacts.items()]
+    return [f'{k:<12}>>>{v:>15}' for k, v in contacts.items()]
 
 
 def hello() -> str:
@@ -92,7 +89,7 @@ List of available commands:
         Command>>> """)
     while True:
         try:
-            print(f'{" v0.0.1 ":*^70}')
+            print(f'{" Phone Book v0.0.1 ":*^70}')
             choice = input(tip).lower()
             if not choice:
                 raise ValueError
